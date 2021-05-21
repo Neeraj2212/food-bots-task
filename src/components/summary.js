@@ -1,32 +1,54 @@
 import styles from "./global.module.css";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Card, Col, Container, Row, Table } from "react-bootstrap";
 
 import Header from "./header";
 
-const TableRow = ({ data, idx }) => {
+//Table Row of Orders
+
+const TableRow = ({ data, idx, setBill, setQ, setTax }) => {
 	let tax_ = (data.price / 100) * data.tax_pct;
+	let One_item_total = data.price + tax_;
 	const [cellData, setCellData] = useState({
 		...data,
 		tax: tax_,
-		total: (data.price + tax_) * data.quantity,
+		total: One_item_total * data.quantity,
 	});
 
+	useEffect(() => {
+		setBill((prevState) => prevState + cellData.total);
+		setTax((prevState) => prevState + cellData.tax);
+		setQ((prevState) => prevState + cellData.quantity);
+		return () => {
+			setBill((prevState) => prevState - cellData.total);
+			setQ((prevState) => prevState - cellData.quantity);
+			setTax((prevState) => prevState - cellData.tax);
+		};
+	}, []);
+
+	// Increment quantity and updaing bill , total bill and Total Quantity
 	const increment = () => {
 		let new_q = cellData.quantity + 1;
 		setCellData({
 			...cellData,
 			quantity: new_q,
-			total: (data.price + tax_) * new_q,
+			total: One_item_total * new_q,
 		});
+		setBill((prevState) => prevState + One_item_total);
+		setQ((prevState) => prevState + 1);
 	};
+
+	// Decrement quantity and updaing bill , total bill and Total Quantity
+
 	const decrement = () => {
 		let new_q = cellData.quantity - 1;
 		setCellData({
 			...cellData,
 			quantity: new_q,
-			total: (data.price + tax_) * new_q,
+			total: One_item_total * new_q,
 		});
+		setBill((prevState) => prevState - One_item_total);
+		setQ((prevState) => prevState - 1);
 	};
 
 	return (
@@ -38,7 +60,10 @@ const TableRow = ({ data, idx }) => {
 				<td>{`${cellData.price} ${cellData.currency}`}</td>
 				<td>{`${cellData.tax} ${cellData.currency}`}</td>
 				<td>
-					<span style={{ cursor: "pointer" }} onClick={() => decrement()}>
+					<span
+						style={{ cursor: "pointer" }}
+						onClick={() => cellData.quantity > 0 && decrement()}
+					>
 						-
 					</span>{" "}
 					{cellData.quantity}{" "}
@@ -50,11 +75,13 @@ const TableRow = ({ data, idx }) => {
 			</tr>
 		</>
 	);
-
-	// data.total = data
 };
 
 const SummaryComponent = ({ user, summary }) => {
+	const [totalBill, setTotalBill] = useState(0);
+	const [totalQuantity, setTotalQuantity] = useState(0);
+	const [totalTax, setTotalTax] = useState(0);
+
 	return (
 		<>
 			<Header />
@@ -144,8 +171,28 @@ const SummaryComponent = ({ user, summary }) => {
 													<th>Total</th>
 												</tr>
 												{summary.order.items.map((item, idx) => {
-													return <TableRow key={idx} data={item} idx={idx} />;
+													return (
+														<TableRow
+															key={idx}
+															data={item}
+															idx={idx}
+															setTax={setTotalTax}
+															setBill={setTotalBill}
+															setQ={setTotalQuantity}
+														/>
+													);
 												})}
+												<tr>
+													<th colSpan={4}>Grand Total</th>
+													<td>
+														{totalTax} {" INR"}
+													</td>
+													<td> {totalQuantity}</td>
+													<td>
+														{totalBill}
+														{" INR"}
+													</td>
+												</tr>
 											</tbody>
 										)}
 									</Table>
