@@ -1,10 +1,15 @@
 import React from "react";
+import Header from "./header";
+import { Container } from "react-bootstrap";
 
 const SummaryComponent = () => {
 	return (
-		<div>
-			<h1>Summary</h1>
-		</div>
+		<>
+			<Header />
+			<Container>
+				<h1>Summary</h1>
+			</Container>
+		</>
 	);
 };
 
