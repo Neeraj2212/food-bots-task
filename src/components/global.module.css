@@ -45,6 +45,10 @@
 	padding: 2rem;
 }
 
+.card {
+	background: rgba(255, 255, 255, 0.2) !important;
+}
+
 .secondRow {
 	padding: 2rem 0;
 	display: flex;
@@ -57,8 +61,9 @@
 		backdrop-filter: blur(10px);
 	}
 
-	.header {
-		-webkit-backdrop-filter: blur(10px);
-		backdrop-filter: blur(10px);
+	.header,
+	.card {
+		-webkit-backdrop-filter: blur(10px) !important;
+		backdrop-filter: blur(10px) !important;
 	}
 }

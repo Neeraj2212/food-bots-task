@@ -1,6 +1,6 @@
 import React from "react";
 import { Navbar, Nav, Container } from "react-bootstrap";
-import styles from "./profile.module.css";
+import styles from "./global.module.css";
 const Header = () => {
 	return (
 		<div>

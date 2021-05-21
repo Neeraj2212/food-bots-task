@@ -1,21 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
-import styles from "./profile.module.css";
+import styles from "./global.module.css";
 import Header from "./header";
 
-const ProfileComponent = () => {
-	const [user, setUser] = useState({});
-
-	useEffect(() => {
-		fetch("/api/user")
-			.then((res) => res.json())
-			.then((res) => {
-				console.log(res);
-				setUser(res.user);
-			})
-			.catch((err) => console.log(err));
-	}, []);
-
+const ProfileComponent = ({ user }) => {
 	return (
 		<div>
 			<Header />
